@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Admin Licenses</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="p-4">
+<div class="container">
+<h1>Admin - Licenses</h1>
+<form method="post" action="/admin/add" class="row g-2 mb-4">
+<div class="col-auto">
+<input name="token" placeholder="Plain token (will be hashed)" class="form-control" required>
+</div>
+<div class="col-auto">
+<input name="description" placeholder="Description" class="form-control">
+</div>
+<div class="col-auto">
+<input name="expires_at" placeholder="YYYY-MM-DD (optional)" class="form-control">
+</div>
+<div class="col-auto">
+<button class="btn btn-primary">Add License</button>
+</div>
+</form>
+
+
+<table class="table table-sm">
+<thead><tr><th>ID</th><th>Desc</th><th>Used</th><th>HWID</th><th>Expires At (UTC)</th><th>Active</th><th>Actions</th></tr></thead>
+<tbody>
+{% for l in licenses %}
+<tr>
+<td>{{ l.id }}</td>
+<td>{{ l.description or '-' }}</td>
+<td>{{ 'Yes' if l.used else 'No' }}</td>
+<td>{{ l.bound_hwid or '-' }}</td>
+<td>{{ l.expires_at.strftime('%Y-%m-%d') if l.expires_at else '-' }}</td>
+<td>{{ 'Yes' if l.active else 'No' }}</td>
+<td>
+<form method="post" action="/admin/unbind/{{ l.id }}" style="display:inline"><button class="btn btn-sm btn-warning">Unbind</button></form>
+<form method="post" action="/admin/delete/{{ l.id }}" style="display:inline"><button class="btn btn-sm btn-danger">Delete</button></form>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</body>
+</html>
